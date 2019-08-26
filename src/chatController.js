@@ -7,6 +7,18 @@ app.controller("chatCtrl", ['$scope', 'socket', 'randomColor', 'userService', fu
     $scope.messages = $scope.publicMessages;//默认显示群聊
     $scope.users = [];//
     $scope.color = randomColor.newColor();//当前用户头像颜色
+    $scope.positions = [
+        { 'id': 0, 'value': '#' },
+        { 'id': 1, 'value': '#' },
+        { 'id': 2, 'value': '#' },
+        { 'id': 3, 'value': '#' },
+        { 'id': 4, 'value': '#' },
+        { 'id': 5, 'value': '#' },
+        { 'id': 6, 'value': '#' },
+        { 'id': 7, 'value': '#' },
+        { 'id': 8, 'value': '#' },
+    ];
+
     $scope.login = function () {   //登录进入聊天室
         socket.emit("addUser", { nickname: $scope.nickname, color: $scope.color });
     }
@@ -23,13 +35,14 @@ app.controller("chatCtrl", ['$scope', 'socket', 'randomColor', 'userService', fu
             }
             $scope.privateMessages[rec].push(msg);
         } else { //群聊
-            $scope.publicMessages.push(msg);
+            // $scope.publicMessages.push(msg);
         }
         $scope.words = "";
         if (rec !== $scope.nickname) { //排除给自己发的情况
             socket.emit("addMessage", msg);
         }
     }
+
     $scope.setReceiver = function (receiver) {
         $scope.receiver = receiver;
         if (receiver) { //私信用户
@@ -45,6 +58,22 @@ app.controller("chatCtrl", ['$scope', 'socket', 'randomColor', 'userService', fu
             user.hasNewMessage = false;
         }
     }
+
+    $scope.setPosition = function (position) {
+        if ($scope.positions[position].value === '#') {
+            $scope.positions[position].value = 'X';
+        } else if ($scope.positions[position].value === 'X') {
+            $scope.positions[position].value = 'O';
+        } else {
+            $scope.positions[position].value = '#';
+        }
+        socket.emit('loadPositions', $scope.positions);
+    };
+
+    socket.on('allMessages', function (data) {
+        $scope.messages = data;
+        $scope.publicMessages = $scope.messages;
+    });
 
     //收到登录结果
     socket.on('userAddingResult', function (data) {
@@ -79,6 +108,10 @@ app.controller("chatCtrl", ['$scope', 'socket', 'randomColor', 'userService', fu
                 return;
             }
         }
+    });
+
+    socket.on('reloadPositions', function (data) {
+        $scope.positions = data;
     });
 
     //接收到新消息

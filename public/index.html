@@ -20,7 +20,6 @@
 <body ng-app="chatRoom" ng-controller="chatCtrl">
 
     <!-- chat room -->
-
     <div class="chat-room-wrapper" ng-show="hasLogined">
         <div class="online panel panel-success">
             <div class="panel-heading">
@@ -29,6 +28,29 @@
             <div class="user-wrapper panel-body">
                 <user iscurrentreceiver="receiver===user.nickname" info="user" ng-click="setReceiver(user.nickname)"
                     ng-repeat="user in users"></user>
+            </div>
+            <div class="text-center" id="box">
+                <header>
+                    <h3>Play Tic Tac Toe</h1>
+                </header>
+                <div id="message"></div>
+                <ul id="gameBoard">
+                    <li class="tic" ng-repeat="position in positions" ng-click="setPosition(position.id)"
+                        id="{position.id}">{{ position.value }}</li>
+                    <!-- <li class="tic" id="0">#</li>
+                    <li class="tic" id="1">#</li>
+                    <li class="tic" id="2">#</li>
+                    <li class="tic" id="3">#</li>
+                    <li class="tic" id="4">#</li>
+                    <li class="tic" id="5">#</li>
+                    <li class="tic" id="6">#</li>
+                    <li class="tic" id="7">#</li>
+                    <li class="tic" id="8">#</li> -->
+                </ul>
+                <div class="clearfix"></div>
+                <footer>
+                    <button id="reset">Reset</button>
+                </footer>
             </div>
         </div>
         <div class="chat-room panel panel-success">

@@ -12,6 +12,7 @@ app.get('/', function (req, res) {
 
 var connectedSockets = {};
 var allUsers = [{ nickname: "", color: "#000" }];//初始值即包含"群聊",用""表示nickname
+var allMessages = [];
 io.on('connection', function (socket) {
 
 
@@ -33,13 +34,15 @@ io.on('connection', function (socket) {
         if (data.to) {//发给特定用户
             connectedSockets[data.to].emit('messageAdded', data);
         } else {//群发
+            allMessages.push(data);
+            socket.emit('allMessages', allMessages);
             socket.broadcast.emit('messageAdded', data);//广播消息,除原发送者外都可看到
         }
-
-
     });
 
-
+    socket.on('loadPositions', function (data) {
+        socket.broadcast.emit('reloadPositions', data);
+    });
 
     socket.on('disconnect', function () {  //有用户退出聊天室
         socket.broadcast.emit('userRemoved', {  //广播有用户退出
