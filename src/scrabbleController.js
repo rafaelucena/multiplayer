@@ -1,4 +1,4 @@
-app.controller("chatCtrl", ['$scope', 'socket', 'randomColor', 'userService', function ($scope, socket, randomColor, userService) {
+app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', function ($scope, socket, randomColor, userService) {
     var messageWrapper = $('.message-wrapper');
     $scope.hasLogined = false;
     $scope.receiver = "";//默认是群聊
