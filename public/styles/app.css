@@ -77,14 +77,14 @@ body{
 
 .chat-room-wrapper .chat-room{
     position: relative;
-    float: right;
+    float: left;
     height: 100%;
     width:75%;
 }
 .chat-room-wrapper .online{
     position: relative;
     width: 24%;
-    float: left;
+    float: right;
     height: 100%;
 }
 .chat-room-wrapper .online .user-number{

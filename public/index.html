@@ -20,8 +20,36 @@
 <body ng-app="scrbRoom" ng-controller="scrbCtrl">
     <!-- chat room -->
 
+    <!-- <div class='container'> -->
+    <!-- <% include dashboard %> -->
+    <!-- <div class="row"> -->
+    <!-- <div class="col-md-8"> -->
+    <!-- <% include board %> -->
+    <!-- </div> -->
+    <!-- <div class="col-md-4"> -->
+    <!-- <% include history %> -->
+    <!-- </div> -->
+    <!-- </div> -->
+    <!-- </div> -->
     <div class="chat-room-wrapper" ng-show="hasLogined">
-        <div class="online panel panel-success">
+        <div class="chat-room panel panel-success">
+            <table class="tg">
+                <% for (x = 0; x < 15; x ++) { %>
+                <tr>
+                    <% for (y = 0; y < 15; y ++) { %>
+                    <td class="tg-031e">
+                        <div>
+                            <img ng-class='scrbCtrl.showBoardTiles(<%= x %>, <%= y %>)' id='img<%= x %>-<%= y %>'
+                                ng-src='/images/tiles/{{ scrbCtrl.tile(<%= x %>, <%= y %>) }}.png'
+                                ng-click='scrbCtrl.selectTile(<%= x %>, <%= y %>)'>
+                        </div>
+                    </td>
+                    <% } %>
+                </tr>
+                <% } %>
+            </table>
+        </div>
+        <!-- <div class="online panel panel-success">
             <div class="panel-heading">
                 <h3 class="panel-title">在线<span class="user-number">{{users.length-1}}</span></h3>
             </div>
@@ -29,10 +57,12 @@
                 <user iscurrentreceiver="receiver===user.nickname" info="user" ng-click="setReceiver(user.nickname)"
                     ng-repeat="user in users"></user>
             </div>
-        </div>
-        <div class="chat-room panel panel-success">
+        </div> -->
+        <!-- <div class="chat-room panel panel-success"> -->
+        <div class="online panel panel-success">
             <div class="panel-heading">
-                <h3 class="panel-title">{{receiver?receiver:"群聊"}}</h3>
+                <h3 class="panel-title">{{receiver?receiver:"群聊"}}<span class="user-number">{{users.length-1}}</span>
+                </h3>
             </div>
             <div class="message-wrapper panel-body">
                 <message self="nickname" scrolltothis="scrollToBottom()" info="message" ng-repeat="message in messages">
