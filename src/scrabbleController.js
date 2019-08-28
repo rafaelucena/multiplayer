@@ -2,9 +2,13 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
     /*** GAME ***/
     var boardTileService = new boardTileFactory();
     var gameService = new gameFactory();
-    $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+
+    // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+    $scope.loops = [0, 1];
 
     $scope.setup = function () {
+        $scope.bag = gameService.createBag();
+        $scope.bonuses = gameService.createBoard();
         $scope.boardDisplay = gameService.createBoard();
         // self.bag = gameService.createBag();
         // self.bonuses = gameService.createBoard();

@@ -56,15 +56,31 @@ app.factory('gameFactory', function () {
     };
   };
 
+  Game.prototype.shuffle = function (array) {
+    var currentIndex = array.length;
+    var temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  };
+
   Game.prototype.createBag = function () {
-    var letters = _.keys(letterValues);
+    var letters = Object.keys(letterValues);
     var bag = [];
     for (var letter in letters) {
       for (i = 0; i < letterValues[letters[letter]].tiles; i++) {
         bag.push(letters[letter]);
       }
     }
-    return _.shuffle(bag);
+    return this.shuffle(bag);
   };
 
   Game.prototype.distributeLetters = function (currentLetters, bag) {
