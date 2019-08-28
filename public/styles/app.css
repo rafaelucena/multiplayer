@@ -108,7 +108,7 @@ body{
 }
 .chat-room-wrapper .online{
     position: relative;
-    width: 24%;
+    width: 20%;
     float: right;
     height: 100%;
 }

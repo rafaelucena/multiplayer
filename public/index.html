@@ -13,6 +13,7 @@
     <script src="src/app.js"></script>
     <!-- GAME -->
     <script src="src/factories/boardTileFactory.js"></script>
+    <script src="src/factories/gameFactory.js"></script>
     <!-- MULTIPLAYER -->
     <script src="src/factories/colorFactory.js"></script>
     <script src="src/factories/userFactory.js"></script>
@@ -20,7 +21,7 @@
     <script src="src/scrabbleController.js"></script>
 </head>
 
-<body ng-app="scrbRoom" ng-controller="scrbCtrl">
+<body ng-app="scrbRoom" ng-controller="scrbCtrl" ng-init='setup()'>
     <!-- chat room -->
 
     <!-- <div class='container'> -->
@@ -40,12 +41,10 @@
                 <tr ng-repeat="x in loops">
                     <td class="board-tiles" ng-repeat="y in loops">
                         <div>
-                            <img id="img{{ x + '-' + y }}"
-                                 ng-src="/images/tiles/{{ tile(x, y) }}.png"
-                            />
-                                 <!--ng-class='scrbCtrl.showBoardTiles(<%= x %>, <%= y %>)' -->
-                                 <!--ng-src="/images/tiles/{{ tile(x, y) }}.png"-->
-                                 <!--ng-click='scrbCtrl.selectTile(<%= x %>, <%= y %>)'>-->
+                            <img id="img{{ x + '-' + y }}" ng-src="/images/tiles/{{ tile(x, y) }}.png" />
+                            <!--ng-class='scrbCtrl.showBoardTiles(<%= x %>, <%= y %>)' -->
+                            <!--ng-src="/images/tiles/{{ tile(x, y) }}.png"-->
+                            <!--ng-click='scrbCtrl.selectTile(<%= x %>, <%= y %>)'>-->
                             <!--/>-->
                         </div>
                     </td>
