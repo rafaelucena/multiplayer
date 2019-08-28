@@ -17,11 +17,6 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
         $scope.boardDisplay = gameService.createBoard();
         this.distributeNewLetters();
         this.resetInput();
-        // self.bag = gameService.createBag();
-        // self.bonuses = gameService.createBoard();
-        // self.boardDisplay = _.clone(self.bonuses);
-        // self.distributeNewLetters();
-        // self.resetInput();
     };
 
     $scope.tile = function (x, y) {
