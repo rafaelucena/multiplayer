@@ -11,6 +11,9 @@
     <script src="//cdn.bootcss.com/angular.js/1.4.3/angular.min.js"></script>
     <!-- Source files -->
     <script src="src/app.js"></script>
+    <!-- GAME -->
+    <script src="src/factories/boardTileFactory.js"></script>
+    <!-- MULTIPLAYER -->
     <script src="src/factories/colorFactory.js"></script>
     <script src="src/factories/userFactory.js"></script>
     <script src="src/factories/socketFactory.js"></script>
@@ -34,19 +37,19 @@
     <div class="chat-room-wrapper" ng-show="hasLogined">
         <div class="chat-room panel panel-success">
             <table class="tg">
-                <% for (x = 0; x < 15; x ++) { %>
-                <tr>
-                    <% for (y = 0; y < 15; y ++) { %>
-                    <td class="tg-031e">
+                <tr ng-repeat="x in loops">
+                    <td class="board-tiles" ng-repeat="y in loops">
                         <div>
-                            <img ng-class='scrbCtrl.showBoardTiles(<%= x %>, <%= y %>)' id='img<%= x %>-<%= y %>'
-                                ng-src='/images/tiles/{{ scrbCtrl.tile(<%= x %>, <%= y %>) }}.png'
-                                ng-click='scrbCtrl.selectTile(<%= x %>, <%= y %>)'>
+                            <img id="img{{ x + '-' + y }}"
+                                 ng-src="/images/tiles/{{ tile(x, y) }}.png"
+                            />
+                                 <!--ng-class='scrbCtrl.showBoardTiles(<%= x %>, <%= y %>)' -->
+                                 <!--ng-src="/images/tiles/{{ tile(x, y) }}.png"-->
+                                 <!--ng-click='scrbCtrl.selectTile(<%= x %>, <%= y %>)'>-->
+                            <!--/>-->
                         </div>
                     </td>
-                    <% } %>
                 </tr>
-                <% } %>
             </table>
         </div>
         <!-- <div class="online panel panel-success">
