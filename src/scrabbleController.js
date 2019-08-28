@@ -1,8 +1,11 @@
 app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'boardTileFactory', 'gameFactory', function ($scope, socket, randomColor, userService, boardTileFactory, gameFactory) {
     /*** GAME ***/
+    /* services */
     var boardTileService = new boardTileFactory();
     var gameService = new gameFactory();
 
+    /* variables */
+    $scope.player1Letters = [];
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     $scope.loops = [0, 1];
 
@@ -10,6 +13,7 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
         $scope.bag = gameService.createBag();
         $scope.bonuses = gameService.createBoard();
         $scope.boardDisplay = gameService.createBoard();
+        this.distributeNewLetters();
         // self.bag = gameService.createBag();
         // self.bonuses = gameService.createBoard();
         // self.boardDisplay = _.clone(self.bonuses);
@@ -18,7 +22,15 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
     };
 
     $scope.tile = function (x, y) {
-        return boardTileService.setTile(x, y, $scope.boardDisplay);
+        return boardTileService.setTile(x, y, this.boardDisplay);
+    };
+
+    $scope.distributeNewLetters = function () {
+        if (this.bag.length < (7 - this.player1Letters.length)) {
+            console.log('Game Over!');
+            return;
+        }
+        this.player1Letters = gameService.distributeLetters(this.player1Letters, this.bag);
     };
 
     /*** MULTIPLAYER ***/
