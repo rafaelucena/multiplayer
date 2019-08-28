@@ -6,6 +6,8 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
 
     /* variables */
     $scope.player1Letters = [];
+    $scope.inputs = {};
+    $scope.words = {};
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     $scope.loops = [0, 1];
 
@@ -14,6 +16,7 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
         $scope.bonuses = gameService.createBoard();
         $scope.boardDisplay = gameService.createBoard();
         this.distributeNewLetters();
+        this.resetInput();
         // self.bag = gameService.createBag();
         // self.bonuses = gameService.createBoard();
         // self.boardDisplay = _.clone(self.bonuses);
@@ -31,6 +34,17 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
             return;
         }
         this.player1Letters = gameService.distributeLetters(this.player1Letters, this.bag);
+    };
+
+    $scope.resetInput = function () {
+        this.inputs = {
+            'direction': '',
+            'reference': '',
+            'last': '',
+            'length': 0,
+            'list': {},
+        };
+        this.words = {};
     };
 
     /*** MULTIPLAYER ***/
