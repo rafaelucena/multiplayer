@@ -1,8 +1,9 @@
-app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'boardTileFactory', 'gameFactory', function ($scope, socket, randomColor, userService, boardTileFactory, gameFactory) {
+app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'boardTileFactory', 'gameFactory', 'wordsFactory', function ($scope, socket, randomColor, userService, boardTileFactory, gameFactory, wordsFactory) {
     /*** GAME ***/
     /* services */
     var boardTileService = new boardTileFactory();
     var gameService = new gameFactory();
+    var wordService = new wordsFactory();
 
     /* variables */
     $scope.player1Letters = [];
@@ -10,6 +11,7 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
     $scope.words = {};
     $scope.wordHistory = [];
     $scope.letterHistory = [];
+    $scope.selected = null;
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     $scope.loops = [0, 1];
 
@@ -42,6 +44,56 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
             'list': {},
         };
         this.words = {};
+    };
+
+    $scope.showSelected = function (index) {
+        return this.player1Letters[index].status;
+    };
+
+    // Placing tiles on the board
+    $scope.selectLetter = function (index) {
+        if (this.player1Letters[index].status === 'placed') {
+            return;
+        }
+        if (this.player1Letters[index].status === 'selected') {
+            return this.undoSelect(index);
+        }
+        if (this.selected !== null && this.player1Letters[index].status === 'ready') {
+            return this.adjustLetters(index);
+        }
+        this.selected = this.player1Letters[index].value;
+        this.removeAllSelectedClass();
+        this.addSelectedClass(index);
+    };
+
+    $scope.undoSelect = function (index) {
+        this.selected = null;
+        this.removeAllSelectedClass();
+    };
+
+    $scope.adjustLetters = function (index) {
+        var indexOfSelected = null;
+
+        for (var x in this.player1Letters) {
+            if (this.player1Letters[x].status === 'selected') {
+                indexOfSelected = x;
+                break;
+            }
+        }
+
+        var valueOfReady = this.player1Letters[index].value;
+        this.player1Letters[index].value = this.selected;
+        this.player1Letters[indexOfSelected].value = valueOfReady;
+        this.selected = null;
+        this.removeAllSelectedClass();
+    };
+
+    $scope.removeAllSelectedClass = function () {
+        this.player1Letters = wordService.removeAllSelectedClass(this.player1Letters);
+    };
+
+    $scope.addSelectedClass = function (index) {
+        this.player1Letters = wordService.addSelectedClass(this.player1Letters, index);
     };
 
     // Display board tiles at correct opacity

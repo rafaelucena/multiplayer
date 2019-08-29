@@ -4,7 +4,9 @@
             <td class="player-tiles" ng-repeat='letter in player1Letters track by $index'>
                 <div>
                     <img id='letter-{{ letter.value }}'
-                         ng-src="/images/tiles/letter-{{ letter.value }}.png" />
+                         ng-class='showSelected($index)'
+                         ng-src="/images/tiles/letter-{{ letter.value }}.png"
+                         ng-click='selectLetter($index)' />
                    <!-- ng-class='showSelected($index)' -->
                         <!-- ng-click='scrbCtrl.selectLetter($index)' /> -->
                 </div>
