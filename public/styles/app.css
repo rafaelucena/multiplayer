@@ -83,6 +83,11 @@ body{
     opacity: 0.1;
 }
 
+.chat-room-panel{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
 .chat-room-wrapper{
     min-width: 800px;
     max-width: 1000px;
