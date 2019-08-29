@@ -8,6 +8,8 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
     $scope.player1Letters = [];
     $scope.inputs = {};
     $scope.words = {};
+    $scope.wordHistory = [];
+    $scope.letterHistory = [];
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     $scope.loops = [0, 1];
 
@@ -40,6 +42,24 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
             'list': {},
         };
         this.words = {};
+    };
+
+    // Display board tiles at correct opacity
+    $scope.showBoardTiles = function (x, y) {
+        if (this.wordHistory.length === 0 && this.inputs.length === 0) {
+            return boardTileService.showStartingTile(x, y);
+        }
+        var tileToCheck = [x, y];
+        if (boardTileService.showLaidTiles(tileToCheck, this.inputs.list, this.letterHistory) === true) {
+            return 'board-tiles-active';
+        }
+        if (this.inputs.length === 0) {
+            return 'board-tiles-active';
+        }
+        if (this.inputs.length === 1) {
+            return boardTileService.showWhenOneTileLaid(tileToCheck, this.inputs);
+        }
+        return boardTileService.showBoardTiles(tileToCheck, this.inputs);
     };
 
     /*** MULTIPLAYER ***/

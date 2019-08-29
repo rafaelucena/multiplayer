@@ -75,6 +75,14 @@ body{
     word-break:normal;
 }
 
+.board-tiles-active {
+    opacity: 1;
+}
+
+.board-tiles-inactive {
+    opacity: 0.1;
+}
+
 .chat-room-wrapper{
     min-width: 800px;
     max-width: 1000px;

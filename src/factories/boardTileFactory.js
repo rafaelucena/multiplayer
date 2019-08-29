@@ -260,12 +260,20 @@ app.factory('boardTileFactory', function () {
   BoardTile.prototype.showLaidTiles = function (tileToCheck, playerInput, letterHistory) {
     var x = tileToCheck[0];
     var y = tileToCheck[1];
+    var converted = this.convert(x, y);
+
     for (var i in playerInput) {
-      if (this.convert(x, y) === playerInput[i].position) { return true; }
+      if (converted === playerInput[i].position) {
+        return true;
+      }
     }
     for (var j in letterHistory) {
-      if (this.convert(x, y) === letterHistory[j].position) { return true; }
+      if (converted === letterHistory[j].position) {
+        return true;
+      }
     }
+
+    return false;
   };
 
   BoardTile.prototype.showWhenOneTileLaid = function (tileToCheck, playerInput) {
