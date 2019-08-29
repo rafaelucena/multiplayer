@@ -1,0 +1,15 @@
+<table class="tg">
+    <tr ng-repeat="x in loops">
+        <td class="board-tiles" ng-repeat="y in loops">
+            <div>
+                <img id="img{{ x + '-' + y }}" 
+                     ng-src="/images/tiles/{{ tile(x, y) }}.png"
+                     ng-class="showBoardTiles(x, y)" />
+                <!--ng-class='scrbCtrl.showBoardTiles(<%= x %>, <%= y %>)' -->
+                <!--ng-src="/images/tiles/{{ tile(x, y) }}.png"-->
+                <!--ng-click='scrbCtrl.selectTile(<%= x %>, <%= y %>)'>-->
+                <!--/>-->
+            </div>
+        </td>
+    </tr>
+</table>

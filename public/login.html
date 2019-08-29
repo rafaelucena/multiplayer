@@ -1,0 +1,13 @@
+<form class="form-inline login" novalidate name="userform" ng-submit="login()">
+    <div class="form-group">
+        <label for="nickname" class="sr-only"></label>
+        <div class="input-group">
+            <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+            <input type="text" class="form-control" id="nickname" placeholder="Your Nickname"
+                ng-model="nickname" required />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" ng-disabled="userform.$invalid">LOG IN</button>
+    <p ng-show="userExisted" class="help-block">A user with this nickname already exists.</p>
+
+</form>
