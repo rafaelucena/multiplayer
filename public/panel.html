@@ -1,7 +1,7 @@
 <div class='player-letters'>
     <table class="tg">
         <tr>
-            <td class="player-tiles" ng-repeat='letter in player1Letters track by $index'>
+            <td class="player-tiles" ng-repeat='letter in playerLetters.list track by $index'>
                 <div>
                     <img id='letter-{{ letter.value }}'
                          ng-class='showSelected($index)'
