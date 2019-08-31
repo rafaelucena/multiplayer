@@ -83,6 +83,14 @@ body{
     opacity: 0.1;
 }
 
+.selected {
+    opacity: 0.5;
+}
+
+.placed {
+    opacity: 0.1;
+}
+
 .chat-room-panel{
     max-width: 1000px;
     margin: 0 auto;

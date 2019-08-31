@@ -73,7 +73,7 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
     };
 
     $scope.undoSelect = function (index) {
-        this.playerLetters.list.selected = null;
+        this.playerLetters.selected = null;
         this.removeAllSelectedClass();
     };
 
@@ -104,9 +104,9 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
 
     // Display board tiles at correct opacity
     $scope.showBoardTiles = function (x, y) {
-        if (this.wordHistory.length === 0 && this.inputs.length === 0) {
-            return boardTileService.showStartingTile(x, y);
-        }
+        // if (this.wordHistory.length === 0 && this.inputs.length === 0) {
+        //     return boardTileService.showStartingTile(x, y);
+        // }
         var tileToCheck = [x, y];
         if (boardTileService.showLaidTiles(tileToCheck, this.inputs.list, this.letterHistory) === true) {
             return 'board-tiles-active';
