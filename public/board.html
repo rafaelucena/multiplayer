@@ -1,12 +1,10 @@
 <table class="tg">
-    <tr ng-repeat="x in loops">
-        <td class="board-tiles" ng-repeat="y in loops">
+    <tr ng-repeat="x in $parent.loops">
+        <td class="board-tiles" ng-repeat="y in $parent.loops">
             <div>
                 <img id="img{{ x + '-' + y }}" 
-                     ng-src="/images/tiles/{{ tile(x, y) }}.png"
-                     ng-class="showBoardTiles(x, y)" />
-                <!--ng-class='scrbCtrl.showBoardTiles(<%= x %>, <%= y %>)' -->
-                <!--ng-src="/images/tiles/{{ tile(x, y) }}.png"-->
+                     ng-src="/images/tiles/{{ $parent.tile(x, y) }}.png"
+                     ng-class="$parent.showBoardTiles(x, y)" />
                 <!--ng-click='scrbCtrl.selectTile(<%= x %>, <%= y %>)'>-->
                 <!--/>-->
             </div>
