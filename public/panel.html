@@ -1,12 +1,12 @@
 <div class='player-letters'>
     <table class="tg">
         <tr>
-            <td class="player-tiles" ng-repeat='letter in playerLetters.list track by $index'>
+            <td class="player-tiles" ng-repeat='letter in $parent.playerLetters.list track by $index'>
                 <div>
                     <img id='letter-{{ letter.value }}'
-                         ng-class='showSelected($index)'
+                         ng-class='$parent.showSelected($index)'
                          ng-src="/images/tiles/letter-{{ letter.value }}.png"
-                         ng-click='selectLetter($index)' />
+                         ng-click='$parent.selectLetter($index)' />
                    <!-- ng-class='showSelected($index)' -->
                         <!-- ng-click='scrbCtrl.selectLetter($index)' /> -->
                 </div>
