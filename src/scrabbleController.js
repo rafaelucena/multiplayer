@@ -8,7 +8,6 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
     /* variables */
     $scope.playerLetters = {};
     $scope.inputs = {};
-    $scope.words = {};
     $scope.wordHistory = [];
     $scope.letterHistory = [];
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -49,8 +48,8 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
             'last': '',
             'length': 0,
             'list': {},
+            'words': {},
         };
-        this.words = {};
     };
 
     $scope.showSelected = function (index) {
