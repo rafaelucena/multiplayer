@@ -1,13 +1,13 @@
-<form class="form-inline login" novalidate name="userform" ng-submit="login()">
+<form class="form-inline login" novalidate name="userform" ng-submit="$parent.login()">
     <div class="form-group">
         <label for="nickname" class="sr-only"></label>
         <div class="input-group">
-            <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-            <input type="text" class="form-control" id="nickname" placeholder="Your Nickname"
-                ng-model="nickname" required />
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-user"></span>
+            </div>
+            <input id="nickname" class="form-control" type="text" placeholder="Your Nickname" ng-model="$parent.nickname" required />
         </div>
     </div>
-    <button type="submit" class="btn btn-primary" ng-disabled="userform.$invalid">LOG IN</button>
-    <p ng-show="userExisted" class="help-block">A user with this nickname already exists.</p>
-
+    <button class="btn btn-primary" type="submit" ng-disabled="$parent.userform.$invalid">LOG IN</button>
+    <p ng-show="$parent.userExisted" class="help-block">A user with this nickname already exists.</p>
 </form>

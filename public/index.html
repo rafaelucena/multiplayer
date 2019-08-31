@@ -35,7 +35,7 @@
     <!-- </div> -->
     <!-- </div> -->
     <!-- </div> -->
-    <div class="chat-room-panel" ng-include="'panel.html'"></div>
+    <div class="chat-room-panel" ng-show="hasLogined" ng-include="'panel.html'"></div>
     <div class="chat-room-wrapper" ng-show="hasLogined">
         <div class="chat-room panel panel-success" ng-include="'board.html'"></div>
         <div class="online panel panel-success" ng-include="'chat.html'"></div>

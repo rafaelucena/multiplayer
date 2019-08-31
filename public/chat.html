@@ -1,14 +1,14 @@
 <div class="panel-heading">
-    <h3 class="panel-title">{{receiver?receiver:"群聊"}}<span class="user-number">{{users.length-1}}</span>
+    <h3 class="panel-title">{{$parent.receiver?$parent.receiver:"群聊"}}<span class="user-number">{{$parent.users.length-1}}</span>
     </h3>
 </div>
 <div class="message-wrapper panel-body">
-    <message self="nickname" scrolltothis="scrollToBottom()" info="message" ng-repeat="message in messages">
+    <message self="nickname" scrolltothis="$parent.scrollToBottom()" info="message" ng-repeat="message in $parent.messages">
     </message>
 </div>
 <div class="panel-footer">
-    <form class="post-form form-inline" novalidate name="postform" ng-submit="postMessage()">
-        <input type="text" class="form-control" ng-model="words" placeholder="说点什么呗" required>
-        <button type="submit" class="btn btn-success" ng-disabled="postform.$invalid">发送</button>
+    <form class="post-form form-inline" novalidate name="postform" ng-submit="$parent.postMessage()">
+        <input type="text" class="form-control" ng-model="$parent.words" placeholder="说点什么呗" required>
+        <button type="submit" class="btn btn-success" ng-disabled="$parent.postform.$invalid">发送</button>
     </form>
 </div>
