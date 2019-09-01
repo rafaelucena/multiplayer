@@ -98,6 +98,10 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
         this.playerLetters.list = wordService.removeAllSelectedClass(this.playerLetters.list);
     };
 
+    $scope.removeAllPlacedClasses = function () {
+        this.playerLetters.list = wordService.removeAllPlacedClasses(this.playerLetters.list);
+    };
+
     $scope.addSelectedClass = function (index) {
         this.playerLetters.list = wordService.addSelectedClass(this.playerLetters.list, index);
     };
@@ -176,6 +180,21 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
             return boardTileService.showWhenOneTileLaid(tileToCheck, this.inputs);
         }
         return boardTileService.showBoardTiles(tileToCheck, this.inputs);
+    };
+
+    // Clearing
+    $scope.clear = function () {
+        this.removeTileFromDisplay();
+        this.removeAllPlacedClasses();
+        this.resetInput();
+    };
+
+    $scope.removeTileFromDisplay = function () {
+        for (var x in this.inputs.list) {
+            var letter = this.inputs.list[x];
+            this.boardDisplay[letter.position] = this.bonuses[letter.position];
+        }
+        boardTileService.resetDirection();
     };
 
     /*** MULTIPLAYER ***/
