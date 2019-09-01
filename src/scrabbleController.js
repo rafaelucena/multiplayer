@@ -169,6 +169,10 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
         this.playerLetters.selected = null;
     };
 
+    $scope.shuffleLetters = function () {
+        this.playerLetters.list = gameService.shuffle(this.playerLetters.list);
+    };
+
     // Display board tiles at correct opacity
     $scope.showBoardTiles = function (x, y) {
         // if (this.wordHistory.length === 0 && this.inputs.length === 0) {
