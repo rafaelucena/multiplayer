@@ -220,8 +220,8 @@ app.factory('boardTileFactory', function () {
   };
 
   BoardTile.prototype.reverseConvert = function (tile) {
-    var splitTile = _.initial(tile.split(/(\d+)/));
-    splitTile[0] = _.indexOf(this.letters, splitTile[0]);
+    var splitTile = tile.split(/(\d+)/);
+    splitTile[0] = this.letters.indexOf(splitTile[0]);
     splitTile[1] = parseInt(splitTile[1], 10) - 1;
     return splitTile;
   };
