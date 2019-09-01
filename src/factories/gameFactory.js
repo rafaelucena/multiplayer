@@ -94,10 +94,14 @@ app.factory('gameFactory', function () {
   };
 
   Game.prototype.swapLetter = function (currentLetters, bag) {
-    var index = _.indexOf(_.pluck(currentLetters, 'status'), 'selected');
-    currentLetters.splice(index, 1);
-    currentLetters = this.distributeLetters(currentLetters, bag);
-    return currentLetters;
+    var keepLetters = [];
+    for (var x in currentLetters) {
+        if (currentLetters[x].status !== 'selected') {
+            keepLetters.push(currentLetters[x]);
+        }
+    }
+
+    return this.distributeLetters(keepLetters, bag);
   };
 
   Game.prototype.getPoints = function (words) {
