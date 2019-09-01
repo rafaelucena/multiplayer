@@ -7,10 +7,11 @@
                          ng-class='$parent.showSelected($index)'
                          ng-src="/images/tiles/letter-{{ letter.value }}.png"
                          ng-click='$parent.selectLetter($index)' />
-                   <!-- ng-class='showSelected($index)' -->
-                        <!-- ng-click='scrbCtrl.selectLetter($index)' /> -->
                 </div>
             </td>
         </tr>
     </table>
+    <button class="btn btn-primary" id="clear-word" ng-click="$parent.clear()" ng-disabled="$parent.inputs.length === 0">Clear</button>
+    <button class="btn btn-primary" id="swap-letters" ng-click="$parent.swapLetter()" ng-disabled="$parent.inputs.selected === null">Swap Letter</button>
+    <button class="btn btn-primary" id="shuffle-letters" ng-click="$parent.shuffleLetters()">Shuffle Letters</button>
 </div>
