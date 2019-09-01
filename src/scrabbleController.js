@@ -11,7 +11,7 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
     $scope.wordHistory = [];
     $scope.letterHistory = [];
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-    $scope.loops = [0, 1];
+    $scope.loops = [0, 1, 2];
 
     $scope.setup = function () {
         $scope.bag = gameService.createBag();
@@ -100,6 +100,64 @@ app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'b
 
     $scope.addSelectedClass = function (index) {
         this.playerLetters.list = wordService.addSelectedClass(this.playerLetters.list, index);
+    };
+
+    $scope.selectTile = function (x, y) {
+        var tile = boardTileService.convert(x, y);
+        if (this.canPlace(x, y, tile) === false) {
+            return;
+        }
+        this.addPlacedClass();
+        this.addTile(tile);
+    };
+
+    $scope.canPlace = function (x, y, tile) {
+        if (this.disabledTile(x, y) === true || this.playerLetters.selected === null) {
+            return false;
+        }
+        if (this.boardDisplay[tile] === undefined) {
+            return true;
+        }
+        if (this.boardDisplay[tile].length === 1) {
+            return false;
+        }
+    };
+
+    $scope.disabledTile = function (x, y) {
+        return this.showBoardTiles(x, y) === 'board-tiles-inactive';
+    };
+
+    $scope.addPlacedClass = function () {
+        this.playerLetters.list = wordService.addPlacedClass(this.playerLetters.list);
+    };
+
+    $scope.addTile = function (tile) {
+        //@TODO - To be fixed using ng-dialog
+        // if (this.playerLetters.selected === 'blank') {
+        //     return this.assignLetterToBlank(tile);
+        // }
+        this.addToInput(tile, false);
+    };
+
+    $scope.addToInput = function (tile, isBlank) {
+        let userInput = {
+          'letter': this.playerLetters.selected,
+          'position': tile,
+          'blank': isBlank,
+          'intercept': '',
+        };
+        this.boardDisplay[tile] = this.playerLetters.selected;
+        this.setInputs(userInput);
+        this.playerLetters.selected = null;
+    };
+
+    $scope.setInputs = function (letter) {
+        if (this.inputs.reference === '') {
+            this.inputs.reference = letter.position;
+        }
+        this.inputs.last = letter.position;
+        this.inputs.length = this.inputs.length + 1;
+        this.inputs.list[letter.position] = letter;
     };
 
     // Display board tiles at correct opacity
