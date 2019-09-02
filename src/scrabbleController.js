@@ -11,7 +11,6 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     $scope.wordHistory = [];
     $scope.letterHistory = [];
     $scope.totalScore = 0;
-    $scope.defer = null;
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     $scope.loops = [0, 1, 2];
 
@@ -186,7 +185,29 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     };
 
     // Playing the word
-    $scope.playWord = async function () {
+    $scope.playWord = function () {
+        this.getFormedWords();
+
+        if (this.inputs.words.valid === false) {
+            return this.notAWord('');
+        }
+
+        var requests = [];
+        for (var x in this.inputs.words.list) {
+            var config = { params: { 'word': this.inputs.words.list[x].formed } };
+            requests.push($http.get('/word', config));
+        }
+        $q.all(requests).then(function (response) {
+            for (var x = 0; x < response.length; x++) {
+                if (response[x].data.length === 0) {
+                    $scope.notAWord(response[x].data.word);
+                }
+            }
+            $scope.validWords($scope.inputs.words);
+        });
+    };
+
+    /*$scope.playWord = async function () {
         this.getFormedWords();
 
         if (this.inputs.words.valid === false) {
@@ -210,7 +231,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         }
 
         return this.validWords(this.inputs.words);
-    };
+    };*/
 
     $scope.getFormedWords = function () {
         this.inputs.words = boardTileService.mapFormedWords(this.inputs);
