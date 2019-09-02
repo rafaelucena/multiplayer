@@ -1,4 +1,4 @@
-app.controller("scrbCtrl", ['$scope', 'socket', 'randomColor', 'userService', 'boardTileFactory', 'gameFactory', 'wordsFactory', function ($scope, socket, randomColor, userService, boardTileFactory, gameFactory, wordsFactory) {
+app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'userService', 'boardTileFactory', 'gameFactory', 'wordsFactory', function ($http, $q, $scope, socket, randomColor, userService, boardTileFactory, gameFactory, wordsFactory) {
     /*** GAME ***/
     /* services */
     var boardTileService = new boardTileFactory();
