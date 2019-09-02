@@ -4,7 +4,6 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     var boardTileService = new boardTileFactory();
     var gameService = new gameFactory();
     var wordService = new wordsFactory();
-    var self = this;
 
     /* variables */
     $scope.playerLetters = {};
@@ -12,7 +11,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     $scope.wordHistory = [];
     $scope.letterHistory = [];
     $scope.totalScore = 0;
-    self.playWords = {};
+    $scope.defer = null;
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     $scope.loops = [0, 1, 2];
 
@@ -51,8 +50,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
             'last': '',
             'length': 0,
             'list': {},
+            'words': {},
         };
-        self.playWords = {};
     };
 
     $scope.showSelected = function (index) {
@@ -187,27 +186,30 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     };
 
     // Playing the word
-    $scope.playWord = function () {
+    $scope.playWord = async function () {
         this.getFormedWords();
 
-        if (self.playWords.valid === false) {
+        if (this.inputs.words.valid === false) {
             return this.notAWord('');
         }
 
-        var requests = [];
-        for (var x in self.playWords.list) {
+        for (var x in this.inputs.words.list) {
             var config = { params: { 'word': this.inputs.words.list[x].formed } };
-            requests.push($http.get('/word', config));
+            // $scope.defer = $q.defer();
+            await $http.get('/word', config).then(function (response) {
+                if (response.data.length === 0) {
+                    this.inputs.words.list[x].valid = false;
+                    this.inputs.words.valid = false
+                    // break;
+                }
+            });
         }
 
-         $q.all(requests).then(function (response) {
-            for (var x = 0; x < response.length; x++) {
-                if (response[x].data.length === 0) {
-                    this.notAWord(response[x].data.word);
-                }
-            }
-            this.validWords(this.inputs.words);
-        });
+        if (this.inputs.words.valid === false) {
+            return self.notAWord('');
+        }
+
+        return this.validWords(this.inputs.words);
     };
 
     $scope.getFormedWords = function () {
@@ -221,7 +223,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
 
     $scope.validWords = function (words) {
         this.getPoints(words);
-        this.playerLetters.list = wordService.removePlacedLetters(this.player1Letters.list);
+        this.playerLetters.list = wordService.removePlacedLetters(this.playerLetters.list);
         this.distributeNewLetters();
         this.updateLetterHistory();
         this.resetInput();
