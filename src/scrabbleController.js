@@ -4,12 +4,15 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     var boardTileService = new boardTileFactory();
     var gameService = new gameFactory();
     var wordService = new wordsFactory();
+    var self = this;
 
     /* variables */
     $scope.playerLetters = {};
     $scope.inputs = {};
     $scope.wordHistory = [];
     $scope.letterHistory = [];
+    $scope.totalScore = 0;
+    self.playWords = {};
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     $scope.loops = [0, 1, 2];
 
@@ -48,8 +51,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
             'last': '',
             'length': 0,
             'list': {},
-            'words': {},
         };
+        self.playWords = {};
     };
 
     $scope.showSelected = function (index) {
@@ -164,6 +167,16 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         this.inputs.list[letter.position] = letter;
     };
 
+    $scope.disablePlayWord = function () {
+        if (this.inputs.length === 0) {
+            return true;
+        }
+        // if (self.gameRules === true && self.wordHistory.length !== 0) {
+        //     return true;
+        // }
+        return false;
+    };
+
     $scope.swapLetter = function () {
         this.playerLetters.list = gameService.swapLetter(this.playerLetters.list, this.bag);
         this.playerLetters.selected = null;
@@ -171,6 +184,65 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
 
     $scope.shuffleLetters = function () {
         this.playerLetters.list = gameService.shuffle(this.playerLetters.list);
+    };
+
+    // Playing the word
+    $scope.playWord = function () {
+        this.getFormedWords();
+
+        if (self.playWords.valid === false) {
+            return this.notAWord('');
+        }
+
+        var requests = [];
+        for (var x in self.playWords.list) {
+            var config = { params: { 'word': this.inputs.words.list[x].formed } };
+            requests.push($http.get('/word', config));
+        }
+
+         $q.all(requests).then(function (response) {
+            for (var x = 0; x < response.length; x++) {
+                if (response[x].data.length === 0) {
+                    this.notAWord(response[x].data.word);
+                }
+            }
+            this.validWords(this.inputs.words);
+        });
+    };
+
+    $scope.getFormedWords = function () {
+        this.inputs.words = boardTileService.mapFormedWords(this.inputs);
+    };
+
+    $scope.notAWord = function (word) {
+        this.wordHistory.push({ 'word': word, 'points': 0, 'definition': 'Not a word!' });
+        this.resetRound();
+    };
+
+    $scope.validWords = function (words) {
+        this.getPoints(words);
+        this.playerLetters.list = wordService.removePlacedLetters(this.player1Letters.list);
+        this.distributeNewLetters();
+        this.updateLetterHistory();
+        this.resetInput();
+        boardTileService.resetDirection();
+    };
+
+    $scope.getPoints = function (words) {
+        words.list = gameService.getPoints(words.list);
+
+        for (var x in words.list) {
+            this.wordHistory.push({ 'word': words.list[x].formed, 'points': words.list[x].points, 'definition': '' });
+            this.totalScore += words.list[x].points;
+        }
+    };
+
+    $scope.updateLetterHistory = function () {
+        for (var x in this.inputs.list) {
+            var letter = this.inputs.list[x];
+            boardTileService.setBoardMap(letter);
+            this.letterHistory.push(letter);
+        }
     };
 
     // Display board tiles at correct opacity
@@ -204,6 +276,12 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
             this.boardDisplay[letter.position] = this.bonuses[letter.position];
         }
         boardTileService.resetDirection();
+    };
+
+    $scope.resetRound = function () {
+        this.removeTileFromDisplay();
+        this.resetInput();
+        this.removeAllPlacedClasses();
     };
 
     /*** MULTIPLAYER ***/
