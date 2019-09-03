@@ -1,4 +1,4 @@
-app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'userService', 'boardTileFactory', 'gameFactory', 'wordsFactory', function ($http, $q, $scope, socket, randomColor, userService, boardTileFactory, gameFactory, wordsFactory) {
+app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'randomColor', 'userService', 'boardTileFactory', 'gameFactory', 'wordsFactory', function ($http, $q, $scope, $timeout, socket, randomColor, userService, boardTileFactory, gameFactory, wordsFactory) {
     /*** GAME ***/
     /* services */
     var boardTileService = new boardTileFactory();
@@ -28,6 +28,28 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
 
     $scope.pushPlayerTurn = function () {
         $scope.player.turn = !$scope.player.turn;
+        if ($scope.player.turn) {
+            $scope.countdown();
+        }
+    }
+
+    $scope.countdown = function () {
+        countdownStop = $timeout(function () {
+            if ($scope.player.time == 0) {
+                $scope.stop();
+                // $scope.completeRound();
+            }
+            else {
+                if ($scope.player.turn) {
+                    $scope.player.time--;
+                    $scope.countdown();
+                }
+            }
+        }, 1000);
+    };
+
+    $scope.stop = function () {
+        $timeout.cancel(countdownStop);
     }
 
     $scope.tile = function (x, y) {
