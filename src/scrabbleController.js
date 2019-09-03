@@ -200,11 +200,10 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         $q.all(requests).then(function (response) {
             for (var x = 0; x < response.length; x++) {
                 if (response[x].data.length === 0) {
-                    $scope.notAWord(response[x].data.word);
-                    break;
+                    return $scope.notAWord(response[x].data.word);
                 }
             }
-            $scope.validWords($scope.inputs.words);
+            return $scope.validWords($scope.inputs.words);
         });
     };
 
