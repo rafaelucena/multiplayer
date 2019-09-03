@@ -6,6 +6,10 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     var wordService = new wordsFactory();
 
     /* variables */
+    $scope.player = {
+        'time': 300,
+        'turn': false,
+    };
     $scope.playerLetters = {};
     $scope.inputs = {};
     $scope.wordHistory = [];
@@ -21,6 +25,10 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         $scope.distributeNewLetters();
         $scope.resetInput();
     };
+
+    $scope.pushPlayerTurn = function () {
+        $scope.player.turn = !$scope.player.turn;
+    }
 
     $scope.tile = function (x, y) {
         return boardTileService.setTile(x, y, $scope.boardDisplay);
@@ -54,6 +62,9 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     };
 
     $scope.showSelected = function (index) {
+        if ($scope.player.turn === false) {
+            return 'placed';
+        }
         return $scope.playerLetters.list[index].status;
     };
 
@@ -109,7 +120,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
 
     $scope.selectTile = function (x, y) {
         var tile = boardTileService.convert(x, y);
-        if ($scope.canPlace(x, y, tile) === false) {
+        if ($scope.canPlace(x, y, tile) === false || $scope.player.turn === false) {
             return;
         }
         $scope.addPlacedClass();
@@ -203,6 +214,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
                     return $scope.notAWord(response[x].data.word);
                 }
             }
+            $scope.pushPlayerTurn();
             return $scope.validWords($scope.inputs.words);
         });
     };
@@ -374,8 +386,14 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
 
     //接收到在线用户消息
     socket.on('allUser', function (data) {
-        if (!$scope.hasLogined) return;
+        if (!$scope.hasLogined) {
+            return;
+        }
         $scope.users = data;
+
+        if ($scope.users.length === 2) {
+            $scope.pushPlayerTurn();
+        }
     });
 
     //接收到用户退出消息
@@ -421,6 +439,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
             unsetList.push(item.position);
         }
         gameService.unsetBonuses(unsetList);
+        $scope.pushPlayerTurn();
     });
 }]);
 
