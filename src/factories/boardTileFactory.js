@@ -24,9 +24,12 @@ app.factory('boardTileFactory', function () {
     };
   };
 
-  BoardTile.prototype.setBoardMap = function (letter) {
-    var index = letter.position.substring(0, 1);
-    this.boardMap[index][letter.position] = letter;
+  BoardTile.prototype.setBoardMap = function (letters) {
+    for (var x in letters) {
+        var letter = letters[x];
+        var index = letter.position.substring(0, 1);
+        this.boardMap[index][letter.position] = letter;
+    }
   };
 
   BoardTile.prototype.hasDirection = function () {

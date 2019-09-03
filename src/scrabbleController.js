@@ -246,7 +246,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         $scope.getPoints(words);
         $scope.playerLetters.list = wordService.removePlacedLetters($scope.playerLetters.list);
         $scope.distributeNewLetters();
-        $scope.updateLetterHistory();
+        $scope.updateLetterHistory($scope.inputs.list);
         $scope.resetInput();
         boardTileService.resetDirection();
     };
@@ -260,11 +260,10 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         }
     };
 
-    $scope.updateLetterHistory = function () {
-        for (var x in $scope.inputs.list) {
-            var letter = $scope.inputs.list[x];
-            boardTileService.setBoardMap(letter);
-            $scope.letterHistory.push(letter);
+    $scope.updateLetterHistory = function (letters) {
+        boardTileService.setBoardMap(letters);
+        for (var x in letters) {
+            $scope.letterHistory.push(letters[x]);
         }
     };
 
