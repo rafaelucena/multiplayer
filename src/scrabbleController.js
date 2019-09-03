@@ -247,6 +247,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         $scope.playerLetters.list = wordService.removePlacedLetters($scope.playerLetters.list);
         $scope.distributeNewLetters();
         $scope.updateLetterHistory($scope.inputs.list);
+        socket.emit('addLetters', $scope.inputs.list);
         $scope.resetInput();
         boardTileService.resetDirection();
     };
@@ -411,8 +412,16 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         }
     });
 
-
-
+    socket.on('lettersAdded', function (list) {
+        $scope.updateLetterHistory(list);
+        var unsetList = [];
+        for (var x in list) {
+            var item = list[x];
+            $scope.boardDisplay[item.position] = item.letter;
+            unsetList.push(item.position);
+        }
+        gameService.unsetBonuses(unsetList);
+    });
 }]);
 
 app.directive('message', ['$timeout', function ($timeout) {

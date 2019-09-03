@@ -41,8 +41,6 @@ io.on('connection', function (socket) {
 
     });
 
-
-
     socket.on('disconnect', function () {  //有用户退出聊天室
         socket.broadcast.emit('userRemoved', {  //广播有用户退出
             nickname: socket.nickname
@@ -54,8 +52,11 @@ io.on('connection', function (socket) {
         }
         delete connectedSockets[socket.nickname]; //删除对应的socket实例
 
-    }
-    );
+    });
+
+    socket.on('addLetters', function (list) {
+        socket.broadcast.emit('lettersAdded', list);
+    });
 });
 
 http.listen(3002, function () {
