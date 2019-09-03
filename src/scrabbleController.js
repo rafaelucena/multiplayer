@@ -18,32 +18,32 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         $scope.bag = gameService.createBag();
         $scope.bonuses = gameService.createBoard();
         $scope.boardDisplay = gameService.createBoard();
-        this.distributeNewLetters();
-        this.resetInput();
+        $scope.distributeNewLetters();
+        $scope.resetInput();
     };
 
     $scope.tile = function (x, y) {
-        return boardTileService.setTile(x, y, this.boardDisplay);
+        return boardTileService.setTile(x, y, $scope.boardDisplay);
     };
 
     $scope.distributeNewLetters = function () {
-        this.setupPlayerLetters();
-        if (this.bag.length < (7 - this.playerLetters.list.length)) {
+        $scope.setupPlayerLetters();
+        if ($scope.bag.length < (7 - $scope.playerLetters.list.length)) {
             console.log('Game Over!');
             return;
         }
-        this.playerLetters.list = gameService.distributeLetters(this.playerLetters.list, this.bag);
+        $scope.playerLetters.list = gameService.distributeLetters($scope.playerLetters.list, $scope.bag);
     };
 
     $scope.setupPlayerLetters = function () {
-        this.playerLetters = {
+        $scope.playerLetters = {
             'list': [],
             'selected': null
         };
     };
 
     $scope.resetInput = function () {
-        this.inputs = {
+        $scope.inputs = {
             'direction': '',
             'reference': '',
             'last': '',
@@ -54,119 +54,119 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     };
 
     $scope.showSelected = function (index) {
-        return this.playerLetters.list[index].status;
+        return $scope.playerLetters.list[index].status;
     };
 
     // Placing tiles on the board
     $scope.selectLetter = function (index) {
-        if (this.playerLetters.list[index].status === 'placed') {
+        if ($scope.playerLetters.list[index].status === 'placed') {
             return;
         }
-        if (this.playerLetters.list[index].status === 'selected') {
-            return this.undoSelect(index);
+        if ($scope.playerLetters.list[index].status === 'selected') {
+            return $scope.undoSelect(index);
         }
-        if (this.playerLetters.selected !== null && this.playerLetters.list[index].status === 'ready') {
-            return this.adjustLetters(index);
+        if ($scope.playerLetters.selected !== null && $scope.playerLetters.list[index].status === 'ready') {
+            return $scope.adjustLetters(index);
         }
-        this.playerLetters.selected = this.playerLetters.list[index].value;
-        this.removeAllSelectedClass();
-        this.addSelectedClass(index);
+        $scope.playerLetters.selected = $scope.playerLetters.list[index].value;
+        $scope.removeAllSelectedClass();
+        $scope.addSelectedClass(index);
     };
 
     $scope.undoSelect = function (index) {
-        this.playerLetters.selected = null;
-        this.removeAllSelectedClass();
+        $scope.playerLetters.selected = null;
+        $scope.removeAllSelectedClass();
     };
 
     $scope.adjustLetters = function (index) {
         var indexOfSelected = null;
 
-        for (var x in this.playerLetters.list) {
-            if (this.playerLetters.list[x].status === 'selected') {
+        for (var x in $scope.playerLetters.list) {
+            if ($scope.playerLetters.list[x].status === 'selected') {
                 indexOfSelected = x;
                 break;
             }
         }
 
-        var valueOfReady = this.playerLetters.list[index].value;
-        this.playerLetters.list[index].value = this.playerLetters.selected;
-        this.playerLetters.list[indexOfSelected].value = valueOfReady;
-        this.playerLetters.selected = null;
-        this.removeAllSelectedClass();
+        var valueOfReady = $scope.playerLetters.list[index].value;
+        $scope.playerLetters.list[index].value = $scope.playerLetters.selected;
+        $scope.playerLetters.list[indexOfSelected].value = valueOfReady;
+        $scope.playerLetters.selected = null;
+        $scope.removeAllSelectedClass();
     };
 
     $scope.removeAllSelectedClass = function () {
-        this.playerLetters.list = wordService.removeAllSelectedClass(this.playerLetters.list);
+        $scope.playerLetters.list = wordService.removeAllSelectedClass($scope.playerLetters.list);
     };
 
     $scope.removeAllPlacedClasses = function () {
-        this.playerLetters.list = wordService.removeAllPlacedClasses(this.playerLetters.list);
+        $scope.playerLetters.list = wordService.removeAllPlacedClasses($scope.playerLetters.list);
     };
 
     $scope.addSelectedClass = function (index) {
-        this.playerLetters.list = wordService.addSelectedClass(this.playerLetters.list, index);
+        $scope.playerLetters.list = wordService.addSelectedClass($scope.playerLetters.list, index);
     };
 
     $scope.selectTile = function (x, y) {
         var tile = boardTileService.convert(x, y);
-        if (this.canPlace(x, y, tile) === false) {
+        if ($scope.canPlace(x, y, tile) === false) {
             return;
         }
-        this.addPlacedClass();
-        this.addTile(tile);
+        $scope.addPlacedClass();
+        $scope.addTile(tile);
     };
 
     $scope.canPlace = function (x, y, tile) {
-        if (this.disabledTile(x, y) === true || this.playerLetters.selected === null) {
+        if ($scope.disabledTile(x, y) === true || $scope.playerLetters.selected === null) {
             return false;
         }
-        if (this.boardDisplay[tile] === undefined) {
+        if ($scope.boardDisplay[tile] === undefined) {
             return true;
         }
-        if (this.boardDisplay[tile].length === 1) {
+        if ($scope.boardDisplay[tile].length === 1) {
             return false;
         }
     };
 
     $scope.disabledTile = function (x, y) {
-        return this.showBoardTiles(x, y) === 'board-tiles-inactive';
+        return $scope.showBoardTiles(x, y) === 'board-tiles-inactive';
     };
 
     $scope.addPlacedClass = function () {
-        this.playerLetters.list = wordService.addPlacedClass(this.playerLetters.list);
+        $scope.playerLetters.list = wordService.addPlacedClass($scope.playerLetters.list);
     };
 
     $scope.addTile = function (tile) {
         //@TODO - To be fixed using ng-dialog
-        // if (this.playerLetters.selected === 'blank') {
-        //     return this.assignLetterToBlank(tile);
+        // if ($scope.playerLetters.selected === 'blank') {
+        //     return $scope.assignLetterToBlank(tile);
         // }
-        this.addToInput(tile, false);
+        $scope.addToInput(tile, false);
     };
 
     $scope.addToInput = function (tile, isBlank) {
         let userInput = {
-          'letter': this.playerLetters.selected,
+          'letter': $scope.playerLetters.selected,
           'position': tile,
           'blank': isBlank,
           'intercept': '',
         };
-        this.boardDisplay[tile] = this.playerLetters.selected;
-        this.setInputs(userInput);
-        this.playerLetters.selected = null;
+        $scope.boardDisplay[tile] = $scope.playerLetters.selected;
+        $scope.setInputs(userInput);
+        $scope.playerLetters.selected = null;
     };
 
     $scope.setInputs = function (letter) {
-        if (this.inputs.reference === '') {
-            this.inputs.reference = letter.position;
+        if ($scope.inputs.reference === '') {
+            $scope.inputs.reference = letter.position;
         }
-        this.inputs.last = letter.position;
-        this.inputs.length = this.inputs.length + 1;
-        this.inputs.list[letter.position] = letter;
+        $scope.inputs.last = letter.position;
+        $scope.inputs.length = $scope.inputs.length + 1;
+        $scope.inputs.list[letter.position] = letter;
     };
 
     $scope.disablePlayWord = function () {
-        if (this.inputs.length === 0) {
+        if ($scope.inputs.length === 0) {
             return true;
         }
         // if (self.gameRules === true && self.wordHistory.length !== 0) {
@@ -176,31 +176,32 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     };
 
     $scope.swapLetter = function () {
-        this.playerLetters.list = gameService.swapLetter(this.playerLetters.list, this.bag);
-        this.playerLetters.selected = null;
+        $scope.playerLetters.list = gameService.swapLetter($scope.playerLetters.list, $scope.bag);
+        $scope.playerLetters.selected = null;
     };
 
     $scope.shuffleLetters = function () {
-        this.playerLetters.list = gameService.shuffle(this.playerLetters.list);
+        $scope.playerLetters.list = gameService.shuffle($scope.playerLetters.list);
     };
 
     // Playing the word
     $scope.playWord = function () {
-        this.getFormedWords();
+        $scope.getFormedWords();
 
-        if (this.inputs.words.valid === false) {
-            return this.notAWord('');
+        if ($scope.inputs.words.valid === false) {
+            return $scope.notAWord('');
         }
 
         var requests = [];
-        for (var x in this.inputs.words.list) {
-            var config = { params: { 'word': this.inputs.words.list[x].formed } };
+        for (var x in $scope.inputs.words.list) {
+            var config = { params: { 'word': $scope.inputs.words.list[x].formed } };
             requests.push($http.get('/word', config));
         }
         $q.all(requests).then(function (response) {
             for (var x = 0; x < response.length; x++) {
                 if (response[x].data.length === 0) {
                     $scope.notAWord(response[x].data.word);
+                    break;
                 }
             }
             $scope.validWords($scope.inputs.words);
@@ -208,46 +209,46 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
     };
 
     /*$scope.playWord = async function () {
-        this.getFormedWords();
+        $scope.getFormedWords();
 
-        if (this.inputs.words.valid === false) {
-            return this.notAWord('');
+        if ($scope.inputs.words.valid === false) {
+            return $scope.notAWord('');
         }
 
-        for (var x in this.inputs.words.list) {
-            var config = { params: { 'word': this.inputs.words.list[x].formed } };
+        for (var x in $scope.inputs.words.list) {
+            var config = { params: { 'word': $scope.inputs.words.list[x].formed } };
             // $scope.defer = $q.defer();
             await $http.get('/word', config).then(function (response) {
                 if (response.data.length === 0) {
-                    this.inputs.words.list[x].valid = false;
-                    this.inputs.words.valid = false
+                    $scope.inputs.words.list[x].valid = false;
+                    $scope.inputs.words.valid = false
                     // break;
                 }
             });
         }
 
-        if (this.inputs.words.valid === false) {
-            return self.notAWord('');
+        if ($scope.inputs.words.valid === false) {
+            return $scope.notAWord('');
         }
 
-        return this.validWords(this.inputs.words);
+        return $scope.validWords($scope.inputs.words);
     };*/
 
     $scope.getFormedWords = function () {
-        this.inputs.words = boardTileService.mapFormedWords(this.inputs);
+        $scope.inputs.words = boardTileService.mapFormedWords($scope.inputs);
     };
 
     $scope.notAWord = function (word) {
-        this.wordHistory.push({ 'word': word, 'points': 0, 'definition': 'Not a word!' });
-        this.resetRound();
+        $scope.wordHistory.push({ 'word': word, 'points': 0, 'definition': 'Not a word!' });
+        $scope.resetRound();
     };
 
     $scope.validWords = function (words) {
-        this.getPoints(words);
-        this.playerLetters.list = wordService.removePlacedLetters(this.playerLetters.list);
-        this.distributeNewLetters();
-        this.updateLetterHistory();
-        this.resetInput();
+        $scope.getPoints(words);
+        $scope.playerLetters.list = wordService.removePlacedLetters($scope.playerLetters.list);
+        $scope.distributeNewLetters();
+        $scope.updateLetterHistory();
+        $scope.resetInput();
         boardTileService.resetDirection();
     };
 
@@ -255,56 +256,56 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', 'socket', 'randomColor', 'u
         words.list = gameService.getPoints(words.list);
 
         for (var x in words.list) {
-            this.wordHistory.push({ 'word': words.list[x].formed, 'points': words.list[x].points, 'definition': '' });
-            this.totalScore += words.list[x].points;
+            $scope.wordHistory.push({ 'word': words.list[x].formed, 'points': words.list[x].points, 'definition': '' });
+            $scope.totalScore += words.list[x].points;
         }
     };
 
     $scope.updateLetterHistory = function () {
-        for (var x in this.inputs.list) {
-            var letter = this.inputs.list[x];
+        for (var x in $scope.inputs.list) {
+            var letter = $scope.inputs.list[x];
             boardTileService.setBoardMap(letter);
-            this.letterHistory.push(letter);
+            $scope.letterHistory.push(letter);
         }
     };
 
     // Display board tiles at correct opacity
     $scope.showBoardTiles = function (x, y) {
-        // if (this.wordHistory.length === 0 && this.inputs.length === 0) {
+        // if ($scope.wordHistory.length === 0 && $scope.inputs.length === 0) {
         //     return boardTileService.showStartingTile(x, y);
         // }
         var tileToCheck = [x, y];
-        if (boardTileService.showLaidTiles(tileToCheck, this.inputs.list, this.letterHistory) === true) {
+        if (boardTileService.showLaidTiles(tileToCheck, $scope.inputs.list, $scope.letterHistory) === true) {
             return 'board-tiles-active';
         }
-        if (this.inputs.length === 0) {
+        if ($scope.inputs.length === 0) {
             return 'board-tiles-active';
         }
-        if (this.inputs.length === 1) {
-            return boardTileService.showWhenOneTileLaid(tileToCheck, this.inputs);
+        if ($scope.inputs.length === 1) {
+            return boardTileService.showWhenOneTileLaid(tileToCheck, $scope.inputs);
         }
-        return boardTileService.showBoardTiles(tileToCheck, this.inputs);
+        return boardTileService.showBoardTiles(tileToCheck, $scope.inputs);
     };
 
     // Clearing
     $scope.clear = function () {
-        this.removeTileFromDisplay();
-        this.removeAllPlacedClasses();
-        this.resetInput();
+        $scope.removeTileFromDisplay();
+        $scope.removeAllPlacedClasses();
+        $scope.resetInput();
     };
 
     $scope.removeTileFromDisplay = function () {
-        for (var x in this.inputs.list) {
-            var letter = this.inputs.list[x];
-            this.boardDisplay[letter.position] = this.bonuses[letter.position];
+        for (var x in $scope.inputs.list) {
+            var letter = $scope.inputs.list[x];
+            $scope.boardDisplay[letter.position] = $scope.bonuses[letter.position];
         }
         boardTileService.resetDirection();
     };
 
     $scope.resetRound = function () {
-        this.removeTileFromDisplay();
-        this.resetInput();
-        this.removeAllPlacedClasses();
+        $scope.removeTileFromDisplay();
+        $scope.resetInput();
+        $scope.removeAllPlacedClasses();
     };
 
     /*** MULTIPLAYER ***/
