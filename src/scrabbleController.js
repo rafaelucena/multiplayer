@@ -10,6 +10,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         'time': 300,
         'turn': false,
     };
+    $scope.bag = [];
     $scope.playerLetters = {};
     $scope.inputs = {};
     $scope.wordHistory = [];
@@ -19,11 +20,12 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     $scope.loops = [0, 1, 2];
 
     $scope.setup = function () {
-        $scope.bag = gameService.createBag();
         $scope.bonuses = gameService.createBoard();
         $scope.boardDisplay = gameService.createBoard();
-        $scope.distributeNewLetters();
         $scope.resetInput();
+        // Moved
+        // $scope.bag = gameService.createBag();
+        // $scope.distributeNewLetters();
     };
 
     $scope.pushPlayerTurn = function () {
@@ -63,6 +65,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
             return;
         }
         $scope.playerLetters.list = gameService.distributeLetters($scope.playerLetters.list, $scope.bag);
+        socket.emit('changeGameBag', $scope.bag);
     };
 
     $scope.setupPlayerLetters = function () {
@@ -412,10 +415,19 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
             return;
         }
         $scope.users = data;
-
+        socket.emit('setGameBag', gameService.createBag());
         if ($scope.users.length === 2) {
             $scope.pushPlayerTurn();
         }
+    });
+
+    socket.on('gameBagCreated', function(data) {
+        $scope.bag = data;
+        $scope.distributeNewLetters();
+    });
+
+    socket.on('gameBagChanged', function(data) {
+        $scope.bag = data;
     });
 
     //接收到用户退出消息

@@ -14,6 +14,7 @@ app.use('/', routes);
 
 var connectedSockets = {};
 var allUsers = [{ nickname: "", color: "#000" }];//初始值即包含"群聊",用""表示nickname
+var gameBag = [];
 io.on('connection', function (socket) {
 
 
@@ -52,6 +53,19 @@ io.on('connection', function (socket) {
         }
         delete connectedSockets[socket.nickname]; //删除对应的socket实例
 
+    });
+
+    socket.on('setGameBag', function(data) {
+        if (gameBag.length === 0) {
+            gameBag = data;
+        }
+
+        socket.emit('gameBagCreated', gameBag);
+    });
+
+    socket.on('changeGameBag', function (data) {
+        gameBag = data;
+        socket.broadcast.emit('gameBagChanged', gameBag);
     });
 
     socket.on('addLetters', function (list) {
