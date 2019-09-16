@@ -14,6 +14,11 @@ app.factory('wordsFactory', ['$http', function ($http) {
     return letters;
   };
 
+  Words.prototype.removeSelectedClass = function (letters, index) {
+    letters[index].status = 'ready';
+    return letters;
+  };
+
   Words.prototype.addSelectedClass = function (letters, index) {
     letters[index].status = 'selected';
     return letters;
@@ -23,6 +28,7 @@ app.factory('wordsFactory', ['$http', function ($http) {
     for (var x in letters) {
       if (letters[x].status === 'selected') {
         letters[x].status = 'placed';
+        break;
       }
     }
 

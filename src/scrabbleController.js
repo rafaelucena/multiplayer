@@ -71,7 +71,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     $scope.setupPlayerLetters = function () {
         $scope.playerLetters = {
             'list': [],
-            'selected': null
+            'selected': 0,
         };
     };
 
@@ -101,17 +101,16 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         if ($scope.playerLetters.list[index].status === 'selected') {
             return $scope.undoSelect(index);
         }
-        if ($scope.playerLetters.selected !== null && $scope.playerLetters.list[index].status === 'ready') {
-            return $scope.adjustLetters(index);
-        }
-        $scope.playerLetters.selected = $scope.playerLetters.list[index].value;
-        $scope.removeAllSelectedClass();
+        // if ($scope.playerLetters.selected !== null && $scope.playerLetters.list[index].status === 'ready') {
+        //     return $scope.adjustLetters(index);
+        // }
+        // $scope.playerLetters.selected = $scope.playerLetters.list[index].value;
+        // $scope.removeAllSelectedClass();
         $scope.addSelectedClass(index);
     };
 
     $scope.undoSelect = function (index) {
-        $scope.playerLetters.selected = null;
-        $scope.removeAllSelectedClass();
+        $scope.removeSelectedClass(index);
     };
 
     $scope.adjustLetters = function (index) {
@@ -133,27 +132,34 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
 
     $scope.removeAllSelectedClass = function () {
         $scope.playerLetters.list = wordService.removeAllSelectedClass($scope.playerLetters.list);
+        $scope.playerLetters.selected = 0;
     };
 
     $scope.removeAllPlacedClasses = function () {
         $scope.playerLetters.list = wordService.removeAllPlacedClasses($scope.playerLetters.list);
     };
 
+    $scope.removeSelectedClass = function (index) {
+        $scope.playerLetters.list = wordService.removeSelectedClass($scope.playerLetters.list, index);
+        $scope.playerLetters.selected--;
+    };
+
     $scope.addSelectedClass = function (index) {
         $scope.playerLetters.list = wordService.addSelectedClass($scope.playerLetters.list, index);
+        $scope.playerLetters.selected++;
     };
 
     $scope.selectTile = function (x, y) {
         var tile = boardTileService.convert(x, y);
-        if ($scope.canPlace(x, y, tile) === false || $scope.player.turn === false) {
+        if ($scope.canPlace(x, y, tile) === false || $scope.playerLetters.selected === 0 || $scope.player.turn === false) {
             return;
         }
-        $scope.addPlacedClass();
         $scope.addTile(tile);
+        $scope.addPlacedClass();
     };
 
     $scope.canPlace = function (x, y, tile) {
-        if ($scope.disabledTile(x, y) === true || $scope.playerLetters.selected === null) {
+        if ($scope.disabledTile(x, y) === true || $scope.playerLetters.selected === 0) {
             return false;
         }
         if ($scope.boardDisplay[tile] === undefined) {
@@ -180,16 +186,25 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         $scope.addToInput(tile, false);
     };
 
+    $scope.getNextSelectedPlayerLetter = function () {
+        for (var x in $scope.playerLetters.list) {
+            if ($scope.playerLetters.list[x].status === 'selected') {
+                return $scope.playerLetters.list[x].value;
+            }
+        }
+    }
+
     $scope.addToInput = function (tile, isBlank) {
+        let letter = $scope.getNextSelectedPlayerLetter();
         let userInput = {
-          'letter': $scope.playerLetters.selected,
+          'letter': letter,
           'position': tile,
           'blank': isBlank,
           'intercept': '',
         };
-        $scope.boardDisplay[tile] = $scope.playerLetters.selected;
+        $scope.boardDisplay[tile] = letter;
         $scope.setInputs(userInput);
-        $scope.playerLetters.selected = null;
+        $scope.playerLetters.selected--;
     };
 
     $scope.setInputs = function (letter) {
@@ -211,9 +226,9 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         return false;
     };
 
-    $scope.swapLetter = function () {
-        $scope.playerLetters.list = gameService.swapLetter($scope.playerLetters.list, $scope.bag);
-        $scope.playerLetters.selected = null;
+    $scope.swapLetters = function () {
+        $scope.playerLetters.list = gameService.swapLetters($scope.playerLetters.list, $scope.bag);
+        $scope.playerLetters.selected = 0;
     };
 
     $scope.shuffleLetters = function () {
@@ -327,6 +342,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     $scope.clear = function () {
         $scope.removeTileFromDisplay();
         $scope.removeAllPlacedClasses();
+        $scope.removeAllSelectedClass();
         $scope.resetInput();
     };
 

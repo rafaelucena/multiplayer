@@ -93,7 +93,7 @@ app.factory('gameFactory', function () {
     return currentLetters;
   };
 
-  Game.prototype.swapLetter = function (currentLetters, bag) {
+  Game.prototype.swapLetters = function (currentLetters, bag) {
     var keepLetters = [];
     for (var x in currentLetters) {
         if (currentLetters[x].status !== 'selected') {
