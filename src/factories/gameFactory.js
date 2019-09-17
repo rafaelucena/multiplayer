@@ -95,13 +95,20 @@ app.factory('gameFactory', function () {
 
   Game.prototype.swapLetters = function (currentLetters, bag) {
     var keepLetters = [];
+    var returnLetters = [];
     for (var x in currentLetters) {
         if (currentLetters[x].status !== 'selected') {
             keepLetters.push(currentLetters[x]);
+        } else {
+            returnLetters.push(currentLetters[x].value);
         }
     }
 
-    return this.distributeLetters(keepLetters, bag);
+    var newLetters = this.distributeLetters(keepLetters, bag);
+    bag.push(...returnLetters);
+    this.shuffle(bag);
+
+    return newLetters;
   };
 
   Game.prototype.getPoints = function (words) {

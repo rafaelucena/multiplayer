@@ -229,6 +229,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     $scope.swapLetters = function () {
         $scope.playerLetters.list = gameService.swapLetters($scope.playerLetters.list, $scope.bag);
         $scope.playerLetters.selected = 0;
+        $scope.pushPlayerTurn();
+        socket.emit('changeGameBag', $scope.bag);
     };
 
     $scope.shuffleLetters = function () {
@@ -432,9 +434,9 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         }
         $scope.users = data;
         socket.emit('setGameBag', gameService.createBag());
-        if ($scope.users.length === 2) {
-            $scope.pushPlayerTurn();
-        }
+        // if ($scope.users.length === 2) {
+            // $scope.pushPlayerTurn();
+        // }
     });
 
     socket.on('gameBagCreated', function(data) {
@@ -444,6 +446,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
 
     socket.on('gameBagChanged', function(data) {
         $scope.bag = data;
+        $scope.pushPlayerTurn();
     });
 
     //接收到用户退出消息
