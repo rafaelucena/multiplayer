@@ -226,6 +226,14 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         return false;
     };
 
+    $scope.disableClearButton = function () {
+        return $scope.inputs.length === 0 && $scope.playerLetters.selected === 0;
+    };
+
+    $scope.disableSwapButton = function () {
+        return $scope.player.turn === false || $scope.playerLetters.selected === 0;
+    };
+
     $scope.swapLetters = function () {
         $scope.playerLetters.list = gameService.swapLetters($scope.playerLetters.list, $scope.bag);
         $scope.playerLetters.selected = 0;
