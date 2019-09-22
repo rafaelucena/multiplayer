@@ -87,11 +87,15 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     };
 
     $scope.showSelected = function (index) {
-        if ($scope.player.turn === false) {
-            return 'placed';
-        }
         return $scope.playerLetters.list[index].status;
     };
+
+    $scope.getTimeClass = function () {
+        if ($scope.player.turn === true) {
+            return 'success';
+        }
+        return 'default';
+    }
 
     // Placing tiles on the board
     $scope.selectLetter = function (index) {
