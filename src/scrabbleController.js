@@ -522,7 +522,6 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
             unsetList.push(item.position);
         }
         gameService.unsetBonuses(unsetList);
-        $scope.pushPlayerTurn();
     });
 
     socket.on('totalScore', function (points) {
