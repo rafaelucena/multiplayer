@@ -15,7 +15,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     $scope.inputs = {};
     $scope.wordHistory = [];
     $scope.letterHistory = [];
-    $scope.totalScore = 0;
+    $scope.totalScore = {};
     // $scope.loops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     $scope.loops = [0, 1, 2];
 
@@ -23,6 +23,10 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         $scope.bonuses = gameService.createBoard();
         $scope.boardDisplay = gameService.createBoard();
         $scope.resetInput();
+        $scope.totalScore = {
+            'mine': 0,
+            'opponent': 0,
+        };
         // Moved
         // $scope.bag = gameService.createBag();
         // $scope.distributeNewLetters();
@@ -323,8 +327,10 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
 
         for (var x in words.list) {
             $scope.wordHistory.push({ 'word': words.list[x].formed, 'points': words.list[x].points, 'definition': '' });
-            $scope.totalScore += words.list[x].points;
+            $scope.totalScore.mine += words.list[x].points;
         }
+
+        socket.emit('scoreTotal', $scope.totalScore.mine);
     };
 
     $scope.updateLetterHistory = function (letters) {
@@ -505,6 +511,10 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         }
         gameService.unsetBonuses(unsetList);
         $scope.pushPlayerTurn();
+    });
+
+    socket.on('totalScore', function (points) {
+        $scope.totalScore.opponent = points;
     });
 }]);
 

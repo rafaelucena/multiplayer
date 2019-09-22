@@ -15,6 +15,7 @@
     <button class="btn btn-primary" id="clear-word" ng-click="$parent.clear()" ng-disabled='$parent.disableClearButton()'>Clear</button>
     <button class="btn btn-info" id="swap-letters" ng-click="$parent.swapLetters()" ng-disabled='$parent.disableSwapButton()'>Swap Letter</button>
     <button class="btn btn-info" id="shuffle-letters" ng-click="$parent.shuffleLetters()">Shuffle Letters</button>
-    <button class="btn btn-warning" id='player-points' ng-disabled='true'>Total points: {{ $parent.totalScore }}</button>
+    <button class="btn btn-warning" id='player-points' ng-disabled='true'>Total: {{ $parent.totalScore.mine }}</button>
+    <button class="btn btn-danger" id='opponent-points' ng-disabled='true'>Vs: {{ $parent.totalScore.opponent }}</button>
     <button class="btn btn-{{ $parent.getTimeClass() }}" id='player-time' ng-disabled='true'>Player time: {{ $parent.player.time }}</button>
 </div>

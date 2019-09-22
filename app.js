@@ -71,6 +71,10 @@ io.on('connection', function (socket) {
     socket.on('addLetters', function (list) {
         socket.broadcast.emit('lettersAdded', list);
     });
+
+    socket.on('scoreTotal', function (points) {
+        socket.broadcast.emit('totalScore', points);
+    });
 });
 
 http.listen(3002, function () {
