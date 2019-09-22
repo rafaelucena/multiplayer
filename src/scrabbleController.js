@@ -107,7 +107,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
             return;
         }
         if ($scope.playerLetters.list[index].status === 'selected') {
-            return $scope.undoSelect(index);
+            return $scope.undoOrAdjust(index);
         }
         // if ($scope.playerLetters.selected !== null && $scope.playerLetters.list[index].status === 'ready') {
         //     return $scope.adjustLetters(index);
@@ -115,6 +115,14 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         // $scope.playerLetters.selected = $scope.playerLetters.list[index].value;
         // $scope.removeAllSelectedClass();
         $scope.addSelectedClass(index);
+    };
+
+    $scope.undoOrAdjust = function (index) {
+        if ($scope.playerLetters.selected === 2) {
+            return $scope.adjustLetters(index);
+        }
+
+        return $scope.undoSelect(index);
     };
 
     $scope.undoSelect = function (index) {
@@ -125,16 +133,20 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         var indexOfSelected = null;
 
         for (var x in $scope.playerLetters.list) {
+            if (x === index) {
+                continue;
+            }
+
             if ($scope.playerLetters.list[x].status === 'selected') {
                 indexOfSelected = x;
                 break;
             }
         }
 
-        var valueOfReady = $scope.playerLetters.list[index].value;
-        $scope.playerLetters.list[index].value = $scope.playerLetters.selected;
-        $scope.playerLetters.list[indexOfSelected].value = valueOfReady;
-        $scope.playerLetters.selected = null;
+        var valueOfIndex = $scope.playerLetters.list[index].value;
+        $scope.playerLetters.list[index].value = $scope.playerLetters.list[indexOfSelected].value;
+        $scope.playerLetters.list[indexOfSelected].value = valueOfIndex;
+        $scope.playerLetters.selected = 0;
         $scope.removeAllSelectedClass();
     };
 
