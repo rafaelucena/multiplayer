@@ -1,9 +1,9 @@
 app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'randomColor', 'userService', 'boardTileFactory', 'gameFactory', 'wordsFactory', function ($http, $q, $scope, $timeout, socket, randomColor, userService, boardTileFactory, gameFactory, wordsFactory) {
     /*** GAME ***/
     /* services */
-    var boardTileService = new boardTileFactory();
-    var gameService = new gameFactory();
-    var wordService = new wordsFactory();
+    let boardTileService = new boardTileFactory();
+    let gameService = new gameFactory();
+    let wordService = new wordsFactory();
 
     /* variables */
     $scope.player = {
@@ -37,11 +37,11 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         if ($scope.player.turn) {
             $scope.countdown();
         }
-    }
+    };
 
     $scope.countdown = function () {
-        countdownStop = $timeout(function () {
-            if ($scope.player.time == 0) {
+        $scope.countdownStop = $timeout(function () {
+            if ($scope.player.time === 0) {
                 $scope.stop();
                 // $scope.completeRound();
             }
@@ -55,8 +55,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     };
 
     $scope.stop = function () {
-        $timeout.cancel(countdownStop);
-    }
+        $timeout.cancel($scope.countdownStop);
+    };
 
     $scope.tile = function (x, y) {
         return boardTileService.setTile(x, y, $scope.boardDisplay);
@@ -99,7 +99,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
             return 'success';
         }
         return 'default';
-    }
+    };
 
     // Placing tiles on the board
     $scope.selectLetter = function (index) {
@@ -130,9 +130,9 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     };
 
     $scope.adjustLetters = function (index) {
-        var indexOfSelected = null;
+        let indexOfSelected = null;
 
-        for (var x in $scope.playerLetters.list) {
+        for (let x in $scope.playerLetters.list) {
             if (Number(x) === index) {
                 continue;
             }
@@ -143,7 +143,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
             }
         }
 
-        var valueOfIndex = $scope.playerLetters.list[index].value;
+        let valueOfIndex = $scope.playerLetters.list[index].value;
         $scope.playerLetters.list[index].value = $scope.playerLetters.list[indexOfSelected].value;
         $scope.playerLetters.list[indexOfSelected].value = valueOfIndex;
         $scope.playerLetters.selected = 0;
@@ -170,7 +170,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     };
 
     $scope.selectTile = function (x, y) {
-        var tile = boardTileService.convert(x, y);
+        let tile = boardTileService.convert(x, y);
         if ($scope.canPlace(x, y, tile) === false || $scope.playerLetters.selected === 0 || $scope.player.turn === false) {
             return;
         }
@@ -207,12 +207,12 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     };
 
     $scope.getNextSelectedPlayerLetter = function () {
-        for (var x in $scope.playerLetters.list) {
+        for (let x in $scope.playerLetters.list) {
             if ($scope.playerLetters.list[x].status === 'selected') {
                 return $scope.playerLetters.list[x].value;
             }
         }
-    }
+    };
 
     $scope.addToInput = function (tile, isBlank) {
         let letter = $scope.getNextSelectedPlayerLetter();
@@ -273,13 +273,13 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
             return $scope.notAWord('');
         }
 
-        var requests = [];
-        for (var x in $scope.inputs.words.list) {
-            var config = { params: { 'word': $scope.inputs.words.list[x].formed } };
+        let requests = [];
+        for (let x in $scope.inputs.words.list) {
+            let config = { params: { 'word': $scope.inputs.words.list[x].formed } };
             requests.push($http.get('/word', config));
         }
         $q.all(requests).then(function (response) {
-            for (var x = 0; x < response.length; x++) {
+            for (let x = 0; x < response.length; x++) {
                 if (response[x].data.length === 0) {
                     return $scope.notAWord(response[x].data.word);
                 }
@@ -296,8 +296,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
             return $scope.notAWord('');
         }
 
-        for (var x in $scope.inputs.words.list) {
-            var config = { params: { 'word': $scope.inputs.words.list[x].formed } };
+        for (let x in $scope.inputs.words.list) {
+            let config = { params: { 'word': $scope.inputs.words.list[x].formed } };
             // $scope.defer = $q.defer();
             await $http.get('/word', config).then(function (response) {
                 if (response.data.length === 0) {
@@ -337,7 +337,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     $scope.getPoints = function (words) {
         words.list = gameService.getPoints(words.list);
 
-        for (var x in words.list) {
+        for (let x in words.list) {
             $scope.wordHistory.push({ 'word': words.list[x].formed, 'points': words.list[x].points, 'definition': '' });
             $scope.totalScore.mine += words.list[x].points;
         }
@@ -347,7 +347,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
 
     $scope.updateLetterHistory = function (letters) {
         boardTileService.setBoardMap(letters);
-        for (var x in letters) {
+        for (let x in letters) {
             $scope.letterHistory.push(letters[x]);
         }
     };
@@ -357,7 +357,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         // if ($scope.wordHistory.length === 0 && $scope.inputs.length === 0) {
         //     return boardTileService.showStartingTile(x, y);
         // }
-        var tileToCheck = [x, y];
+        let tileToCheck = [x, y];
         if (boardTileService.showLaidTiles(tileToCheck, $scope.inputs.list, $scope.letterHistory) === true) {
             return 'board-tiles-active';
         }
@@ -379,8 +379,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     };
 
     $scope.removeTileFromDisplay = function () {
-        for (var x in $scope.inputs.list) {
-            var letter = $scope.inputs.list[x];
+        for (let x in $scope.inputs.list) {
+            let letter = $scope.inputs.list[x];
             $scope.boardDisplay[letter.position] = $scope.bonuses[letter.position];
         }
         boardTileService.resetDirection();
@@ -393,7 +393,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     };
 
     /*** MULTIPLAYER ***/
-    var messageWrapper = $('.message-wrapper');
+    let messageWrapper = $('.message-wrapper');
     $scope.hasLogined = false;
     $scope.receiver = "";//默认是群聊
     $scope.publicMessages = [];//群聊消息
@@ -403,14 +403,14 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     $scope.color = randomColor.newColor();//当前用户头像颜色
     $scope.login = function () {   //登录进入聊天室
         socket.emit("addUser", { nickname: $scope.nickname, color: $scope.color });
-    }
+    };
     $scope.scrollToBottom = function () {
         messageWrapper.scrollTop(messageWrapper[0].scrollHeight);
-    }
+    };
 
     $scope.postMessage = function () {
-        var msg = { text: $scope.words, type: "normal", color: $scope.color, from: $scope.nickname, to: $scope.receiver };
-        var rec = $scope.receiver;
+        let msg = { text: $scope.words, type: "normal", color: $scope.color, from: $scope.nickname, to: $scope.receiver };
+        let rec = $scope.receiver;
         if (rec) {  //私信
             if (!$scope.privateMessages[rec]) {
                 $scope.privateMessages[rec] = [];
@@ -423,7 +423,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         if (rec !== $scope.nickname) { //排除给自己发的情况
             socket.emit("addMessage", msg);
         }
-    }
+    };
+
     $scope.setReceiver = function (receiver) {
         $scope.receiver = receiver;
         if (receiver) { //私信用户
@@ -434,11 +435,11 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         } else {//广播
             $scope.messages = $scope.publicMessages;
         }
-        var user = userService.get($scope.users, receiver);
+        let user = userService.get($scope.users, receiver);
         if (user) {
             user.hasNewMessage = false;
         }
-    }
+    };
 
     //收到登录结果
     socket.on('userAddingResult', function (data) {
@@ -483,8 +484,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
     socket.on('userRemoved', function (data) {
         if (!$scope.hasLogined) return;
         $scope.publicMessages.push({ text: data.nickname, type: "bye" });
-        for (var i = 0; i < $scope.users.length; i++) {
-            if ($scope.users[i].nickname == data.nickname) {
+        for (let i = 0; i < $scope.users.length; i++) {
+            if ($scope.users[i].nickname === data.nickname) {
                 $scope.users.splice(i, 1);
                 return;
             }
@@ -502,8 +503,8 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         } else {//群发
             $scope.publicMessages.push(data);
         }
-        var fromUser = userService.get($scope.users, data.from);
-        var toUser = userService.get($scope.users, data.to);
+        let fromUser = userService.get($scope.users, data.from);
+        let toUser = userService.get($scope.users, data.to);
         if ($scope.receiver !== data.to) {//与来信方不是正在聊天当中才提示新消息
             if (fromUser && toUser.nickname) {
                 fromUser.hasNewMessage = true;//私信
@@ -515,9 +516,9 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
 
     socket.on('lettersAdded', function (list) {
         $scope.updateLetterHistory(list);
-        var unsetList = [];
-        for (var x in list) {
-            var item = list[x];
+        let unsetList = [];
+        for (let x in list) {
+            let item = list[x];
             $scope.boardDisplay[item.position] = item.letter;
             unsetList.push(item.position);
         }
