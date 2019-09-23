@@ -133,7 +133,7 @@ app.controller("scrbCtrl", ['$http', '$q', '$scope', '$timeout', 'socket', 'rand
         var indexOfSelected = null;
 
         for (var x in $scope.playerLetters.list) {
-            if (x === index) {
+            if (x == index) {
                 continue;
             }
 
