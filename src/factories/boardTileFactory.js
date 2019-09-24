@@ -1,7 +1,7 @@
 app.factory('boardTileFactory', function () {
 
   var BoardTile = function () {
-    this.letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'M', 'N', 'O', 'P', 'Q'];
+    this.letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
     this.alphabet = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     this.direction = '';
     this.boardMap = {
@@ -21,6 +21,7 @@ app.factory('boardTileFactory', function () {
       "M": {},
       "N": {},
       "O": {},
+      "P": {},
     };
   };
 
@@ -92,7 +93,7 @@ app.factory('boardTileFactory', function () {
       'tiles': {},
     };
 
-    for (var a = 1; a <= 15; a++) {
+    for (var a = 1; a <= 16; a++) {
       var address = '';
       if (direction === 'horizontal') {
         address = inputs.reference.substring(0, 1) + a;
